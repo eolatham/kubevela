@@ -93,7 +93,7 @@ var _ = Describe("Webservice component with scaler trait (Sawchain)", Ordered, L
 			`), sawchainTimeout, sawchainInterval).Should(Succeed())
 		})
 
-		It("reports the Application as running", func() {
+		It("reports the Application as running and healthy", func() {
 			Eventually(sc.CheckFunc(ctx, `
 				apiVersion: core.oam.dev/v1beta1
 				kind: Application
@@ -101,7 +101,10 @@ var _ = Describe("Webservice component with scaler trait (Sawchain)", Ordered, L
 				  name: webservice-sawchain
 				  namespace: ($namespace)
 				status:
-				  phase: running
+				  status: running
+				  services:
+				  - name: frontend
+				    healthy: true
 			`), sawchainTimeout, sawchainInterval).Should(Succeed())
 		})
 	})
@@ -141,6 +144,21 @@ var _ = Describe("Webservice component with scaler trait (Sawchain)", Ordered, L
 				  replicas: 2
 				status:
 				  readyReplicas: 2
+			`), sawchainTimeout, sawchainInterval).Should(Succeed())
+		})
+
+		It("keeps the Application running and healthy", func() {
+			Eventually(sc.CheckFunc(ctx, `
+				apiVersion: core.oam.dev/v1beta1
+				kind: Application
+				metadata:
+				  name: webservice-sawchain
+				  namespace: ($namespace)
+				status:
+				  status: running
+				  services:
+				  - name: frontend
+				    healthy: true
 			`), sawchainTimeout, sawchainInterval).Should(Succeed())
 		})
 	})
@@ -186,7 +204,10 @@ var _ = Describe("Webservice component with scaler trait (Sawchain)", Ordered, L
 				  name: webservice-sawchain
 				  namespace: ($namespace)
 				status:
-				  phase: running
+				  status: running
+				  services:
+				  - name: frontend
+				    healthy: true
 			`), sawchainTimeout, sawchainInterval).Should(Succeed())
 		})
 	})
